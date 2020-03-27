@@ -1,5 +1,6 @@
 #!/bin/bash -x
-
+X="X"
+O="O"
 declare -a gameboard
 gameboard=(" " " " " " " " " " " " " " " " " ")
 
@@ -10,3 +11,11 @@ echo "-----------"
 echo "${gameboard[3]}  | ${gameboard[4]} | ${gameboard[5]}"
 echo "-----------"
 echo "${gameboard[6]}  | ${gameboard[7]} | ${gameboard[8]}"
+
+lettercheck=$((RANDOM%2))
+case $lettercheck in
+	1) echo "You have assigned : "$O
+		;;
+	2) echo "You have assigned : "$X
+		;;
+esac
