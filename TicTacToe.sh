@@ -5,6 +5,7 @@ Dot=0
 Cross=1
 User=0
 computer=1
+IS_EMPTY=""
 declare -a gameboard
 gameboard=(" " " " " " " " " " " " " " " " " ")
 
@@ -32,7 +33,54 @@ then
 else
 	printf "Invalid input"
 fi
-displayboard
+}
+
+function fillcorners()
+{
+	local letter=$1
+	compPlay=0
+	randomcorner=$((RANDOM%4))
+	case $randomcorner in
+		1)
+			if [[ ${gameboard[0]}==$IS_EMPTY ]]
+			then
+				gameboard[0]=$computerletter
+				compPlay=1
+				return
+			else
+				fillcorners $letter
+			fi
+		;;
+		2)
+			if [[ ${gameboard[2]}==$IS_EMPTY ]]
+			then
+				gameboard[2]=$computerletter
+				compPlay=1
+				return
+			else
+				fillcorners $letter
+			fi
+		;;
+		3)
+			if [[ ${gameboard[6]}==$IS_EMPTY ]]
+			then
+				display[6]=$computerletter
+				compPlay=1
+				return
+			else
+				fillcorners $letter
+			fi
+		;;
+		4)
+			if [[ ${gameboard[8]}==$IS_EMPTY ]]
+			then
+				gameboard[2]=$computerletter
+				compPlay=1
+				return
+			else
+				fillcorners $letter
+			fi
+	esac
 }
 function checkwin()
 {
@@ -230,6 +278,7 @@ function computerturn()
 	computerletter=$1
 	playerletter=$2
 	compPlay=0
+	echo "computer turn:"
 	checkwiningmove $computerletter
 	if(($compPlay==0))
 	then
@@ -237,14 +286,16 @@ function computerturn()
 	fi
 	if(($compPlay==0))
 	then
-		read response
-	#response=$((RANDOM%9))
+		fillcorners $computerletter
+	fi
+	if(($compPlay==0))
+	then
+	response=$((RANDOM%9))
 
 		if [[ "${gameboard[$response]}"!=X && "${gameboard[$response]}"!=O ]]
 		then
 			echo "Computer turn"
 			gameboard[$response]="$computerletter"
-			displayboard
 		else
 			computerturn $computerletter
 		fi
