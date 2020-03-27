@@ -151,21 +151,136 @@ function checkwinningmove()
 		return
 	fi
 }
-
+function blockplayerwin()
+{
+	compPlay=0
+	letter=$1
+	computerletter=$2
+	index=0
+	while(($index<8))
+	do
+		if [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+1))]} == $letter && ${gameboard[$((index+2))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+2))]=$computerletter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+2))]} == $letter && ${gameboard[$((index+1))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+1))]=$computerletter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$((index+2))]} == $letter && ${gameboard[$((index+1))]} == $letter && ${gameboard[$index]} == $IS_EMPTY ]]
+		then
+			gameboard[$index]=$computerletter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+3))]} == $letter && ${gameboard[$((index+6))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+6))]=$computerletter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+6))]} == $letter && ${gameboard[$((index+3))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+3))]=$computerletter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$((index+3))]} == $letter && ${gameboard[$((index+6))]} == $letter && ${gameboard[$index]} == $IS_EMPTY ]]
+		then
+			gameboard[$index]=$computerletter
+			compPlay=1
+			return
+		fi
+		index=$((index+3))
+	done
+	if [[ ${gameboard[0]} == $letter && ${gameboard[4]} == $letter && ${gameboard[8]} == $IS_EMPTY ]]
+	then
+		gameboard[8]=$computerletter
+		compPlay=1
+		return
+	elif [[ ${gameboard[0]} == $letter && ${gameboard[8]} == $letter && ${gameboard[4]} == $IS_EMPTY ]]
+	then
+		gameboard[4]=$computerletter
+		compPlay=1
+		return
+	elif [[ ${gameboard[8]} == $letter && ${gameboard[4]} == $letter && ${gameboard[0]} == $IS_EMPTY ]]
+	then
+		gameboard[0]=$computerletter
+		compPlay=1
+		return
+	fi
+	if [[ ${gameboard[2]} == $letter && ${gameboard[4]} == $letter && ${gameBboard[6]} == $IS_EMPTY ]]
+	then
+		gameboard[6]=$computerletter
+		compPlay=1
+		return
+	elif [[ ${gameboard[2]} == $letter && ${gameboard[6]} == $letter && ${gameboard[4]} == $IS_EMPTY ]]
+	then
+		gameboard[4]=$computerletter
+		compPlay=1
+		return
+	elif [[ ${gameboard[6]} == $letter && ${gameboard[4]} == $letter && ${gameboard[2]} == $IS_EMPTY ]]
+	then
+		gameboard[2]=$computerletter
+		compPlay=1
+		return
+	fi
+}
 function computerturn()
 {
 	computerletter=$1
-	response=$((RANDOM%9))
-	if [[ "${gameboard[$response]}"!=X && "${gameboard[$response]}"!=O ]]
+	playerletter=$2
+	compPlay=0
+	checkwiningmove $computerletter
+	if(($compPlay==0))
 	then
-		echo "Computer turn"
-		gameboard[$response]="$computerletter"
-		displayboard
-	else
-		computerturn $computerletter
+		blockplayerwin $playerletter $computerletter
+	fi
+	if(($compPlay==0))
+	then
+		read response
+	#response=$((RANDOM%9))
+
+		if [[ "${gameboard[$response]}"!=X && "${gameboard[$response]}"!=O ]]
+		then
+			echo "Computer turn"
+			gameboard[$response]="$computerletter"
+			displayboard
+		else
+			computerturn $computerletter
+		fi
 	fi
 }
-
+function alternateplay()
+{
+	chance="$(firstchance)"
+	flag=0
+	if [[ "$chance"=="computerchance" ]]
+	then
+   	flag=1
+	fi
+	while((0==0))
+	do
+   	if [[ $flag%2==0 ]]
+   	then
+      	computerturn $computerletter
+      	result="$(checkwin $computerletter)"
+      	if [[ $result=="wins" || $result=="draw" ]]
+      	then
+         	printf "Computer $result\n"
+         	break
+      	fi
+   	else
+      	playerturn $playerletter
+      	result="$(checkwin $playerletter)"
+      	if [[$result=="wins" || $result=="draw" ]]
+      	then
+         	printf "Player $result \n"
+         	break
+      	fi
+   	fi
+		flag=$((flag+1))
+	done
+}
 function assignletter(){
 	lettercheck=$((RANDOM%2))
 	case $lettercheck in
@@ -181,8 +296,8 @@ function assignletter(){
 }
 function firstchance()
 {
-	chanceCcheck=$((RANDOM%2))
-	case $firstTurn in
+	chancecheck=$((RANDOM%2))
+	case $chancecheck in
 		$User)
 			 echo "playerchance"
 				;;
@@ -193,31 +308,4 @@ function firstchance()
 }
 displayboard
 assignletter
-chance="$(firstchance)"
-flag=0
-if [[ "$chance"=="Computerchance" ]]
-then
-	flag=1
-fi
-while((0==0))
-do
-	if [[ $flag%2==0 ]]
-	then
-		computerturn $computerletter
-		result="$(checkwin $computerletter)"
-		if [[ $result=="wins" || $result=="draw" ]]
-		then
-			printf "Computer $result\n"
-			break
-		fi
-	else
-		playerturn $playerletter
-		result="$(checkwin $playerletter)"
-		if [[$result=="wins" || $result=="draw" ]]
-		then
-			printf "Player $result \n"
-			break
-		fi
-	fi
-	flag=$((flag+1))
-done
+alternateplay
