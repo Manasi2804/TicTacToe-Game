@@ -19,3 +19,11 @@ case $lettercheck in
 	2) echo "You have assigned : "$X
 		;;
 esac
+firstTurn=$((RANDOM%2))
+case $firstTurn in
+	1) echo "User plays first"
+		;;
+	2) echo "Computer plays first"
+		;;
+esac
+
