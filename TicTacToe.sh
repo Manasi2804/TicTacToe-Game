@@ -92,18 +92,6 @@ function assignletter(){
 	esac
 	echo $playerletter
 }
-function getletter(){
-	lettercheck=$((RANDOM%2))
-	case $lettercheck in
-		$Dot)
-			playerletter=$o
-			;;
-		$Cross)
-			playerletter=$x
-			;;
-	esac
-	echo $playerletter
-}
 function getturn(){
 
 	firstTurn=$((RANDOM%2))
