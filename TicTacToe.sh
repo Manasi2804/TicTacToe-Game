@@ -80,29 +80,32 @@ function checkwin()
 	echo $result
 }
 
+function computerturn()
+{
+	computerletter=$1
+	response=$((RANDOM%9))
+	if [[ "${gameboard[$response]}"!=X && "${gameboard[$response]}"!=O ]]
+	then
+		echo "Computer turn"
+		gameboard[$response]="$computerletter"
+		displayboard
+	else
+		computerturn $computerletter
+	fi
+}
+
 function assignletter(){
 	lettercheck=$((RANDOM%2))
 	case $lettercheck in
 		$Dot)
 			playerletter=$O
+			computerletter=$X
 			;;
 		$Cross)
-			playerLetter=$X
+			playerletter=$X
+			computerletter=$O
 			;;
 	esac
-	echo $playerletter
-}
-function getletter(){
-	lettercheck=$((RANDOM%2))
-	case $lettercheck in
-		$Dot)
-			playerletter=$o
-			;;
-		$Cross)
-			playerletter=$x
-			;;
-	esac
-	echo $playerletter
 }
 function getturn(){
 
@@ -116,7 +119,34 @@ function getturn(){
 			;;
 	esac
 }
-letter="$(assignletter)"
-getturn
-playerturn $letter
-checkwin $playerletter
+displayboard
+assignletter
+chance="$(getturn)"
+
+flag=0
+if [[ "$chance"=="Computer plays first" ]]
+then
+	flag=1
+fi
+while((1))
+do
+	if [[ $flag%2==0 ]]
+	then
+		computerturn $computerletter
+		result="$(checkwin $computerletter)"
+		if [[ $result=="wins" || $result=="draw" ]]
+		then
+			printf "Computer $result\n"
+			break
+		fi
+	else
+		playerturn $playerletter
+		result="$(checkwin $playerletter)"
+		if [[$result=="wins" || $result=="draw" ]]
+		then
+			printf "Player $result \n"
+			break
+		fi
+	fi
+	flag=$((flag+1))
+done
