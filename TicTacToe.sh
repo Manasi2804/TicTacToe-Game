@@ -37,28 +37,28 @@ displayboard
 function checkwin()
 {
 	letter=$1
-	if [ "${gameboard[0]}${gameboard[1]}${gameboard[2]}"=="$letter$letter$letter" ]
+	if [ "${gameboard[0]}"==$letter && "${gameboard[1]}"==$letter && "${gameboard[2]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[3]}${gameboard[4]}${gameboard[5]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[3]}"==$letter && "${gameboard[4]}"==$letter && "${gameboard[5]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[6]}${gameboard[7]}${gameboard[8]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[6]}"==$letter && "${gameboard[7]}"==$letter && "${gameboard[8]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[0]}${gameboard[3]}${gameboard[6]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[0]}"==$letter && "${gameboard[3]}"==$letter && "${gameboard[6]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[1]}${gameboard[4]}${gameboard[7]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[1]}"==$letter && "${gameboard[4]}"==$letter && "${gameboard[7]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[2]}${gameboard[5]}${gameboard[8]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[2]}"==$letter && "${gameboard[5]}"==$letter && "${gameboard[8]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[0]}${gameboard[4]}${gameboard[8]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[0]}"==$letter && "${gameboard[4]}"==$letter && "${gameboard[8]}"==$letter ]
 	then
 		result="wins"
-	elif [ "${gameboard[2]}${gameboard[4]}${gameboard[6]}"=="$letter$letter$letter" ]
+	elif [ "${gameboard[2]}"==$letter && "${gameboard[4]}"==$letter && "${gameboard[6]}"==$letter ]
 	then
 		result="wins"
 	else
@@ -78,6 +78,78 @@ function checkwin()
 		fi
 	fi
 	echo $result
+}
+function checkwinningmove()
+{
+	local letter=$1
+	index=0
+	while(($index<8))
+	do
+		if [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+1))]} == $letter && ${gameboard[$((index+2))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+2))]=$letter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+2))]} == $letter && ${gameboard[$((index+1))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+1))]=$letter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$((index+2))]} == $letter && ${gameboard[$((index+1))]} == $letter && ${gameboard[$index]} == $IS_EMPTY ]]
+		then
+			gameBoard[$index]=$letter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+3))]} == $letter && ${gameboard[$((index+6))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+6))]=$letter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$index]} == $letter && ${gameboard[$((index+6))]} == $letter && ${gameboard[$((index+3))]} == $IS_EMPTY ]]
+		then
+			gameboard[$((index+3))]=$letter
+			compPlay=1
+			return
+		elif [[ ${gameboard[$((index+3))]} == $letter && ${gameboard[$((index+6))]} == $letter && ${gameboard[$index]} == $IS_EMPTY ]]
+		then
+			gameboard[$index]=$letter
+			compPlay=1
+			return
+		fi
+		index=$((index+3))
+	done
+	if [[ ${gameboard[0]} == $letter && ${gameboard[4]} == $letter && ${gameboard[8]} == $IS_EMPTY ]]
+	then
+		gameboard[8]=$letter
+		compPlay=1
+		return
+	elif [[ ${gameboard[0]} == $letter && ${gameboard[8]} == $letter && ${gameboard[4]} == $IS_EMPTY ]]
+	then
+		gameboard[4]=$letter
+		compPlay=1
+		return
+	elif [[ ${gameboard[8]} == $letter && ${gameboard[4]} == $letter && ${gameboard[0]} == $IS_EMPTY ]]
+	then
+		gameboard[0]=$letter
+		compPlay=1
+		return
+	fi
+	if [[ ${gameboard[2]} == $letter && ${gameboard[4]} == $letter && ${gameboard[6]} == $IS_EMPTY ]]
+	then
+		gameboard[6]=$letter
+		compPlay=1
+		return
+	elif [[ ${gameboard[2]} == $letter && ${gameboard[6]} == $letter && ${gameboard[4]} == $IS_EMPTY ]]
+	then
+		gameboard[4]=$letter
+		compPlay=1
+		return
+	elif [[ ${gameboard[6]} == $letter && ${gameboard[4]} == $letter && ${gameboard[2]} == $IS_EMPTY ]]
+	then
+		gameboard[2]=$letter
+		compPlay=1
+		return
+	fi
 }
 
 function computerturn()
@@ -107,28 +179,27 @@ function assignletter(){
 			;;
 	esac
 }
-function getturn(){
-
-	firstTurn=$((RANDOM%2))
+function firstchance()
+{
+	chanceCcheck=$((RANDOM%2))
 	case $firstTurn in
-	$User)
-		 echo "User plays first"
-			;;
-	$Computer)
-		 echo "Computer plays first"
-			;;
+		$User)
+			 echo "playerchance"
+				;;
+		$Computer)
+			 echo "computerchance"
+				;;
 	esac
 }
 displayboard
 assignletter
-chance="$(getturn)"
-
+chance="$(firstchance)"
 flag=0
-if [[ "$chance"=="Computer plays first" ]]
+if [[ "$chance"=="Computerchance" ]]
 then
 	flag=1
 fi
-while((1))
+while((0==0))
 do
 	if [[ $flag%2==0 ]]
 	then
