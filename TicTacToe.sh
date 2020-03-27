@@ -93,6 +93,56 @@ function takecenter()
 		compPlay=1
 	fi
 }
+
+function takesides()
+{
+	local letter=$1
+	compPlay=0
+	randomcorner=$((RANDOM%4))
+	case $randomcorner in
+	1)
+		if [[ ${gameboard[1]}==$IS_EMPTY ]]
+		then
+			gameboard[1]=$letter
+			compPlay=1
+			return
+		else
+			fillCorners $letter
+		fi
+	;;
+	2)
+		if [[ ${gameboard[3]}==$IS_EMPTY ]]
+		then
+			gameboard[3]=$letter
+			compPlay=1
+			return
+		else
+			fillcorners $letter
+		fi
+	;;
+	3)
+		if [[ ${gameboard[5]}==$IS_EMPTY ]]
+		then
+			gameboard[5]=$letter
+			compPlay=1
+			return
+		else
+			fillcorners $letter
+		fi
+	;;
+	4)
+		if [[ ${gameboard[7]}==$IS_EMPTY ]]
+		then
+			gameboard[7]=$letter
+			compPlay=1
+			return
+		else
+			fillcorners $letter
+		fi
+	;;
+	esac
+}
+
 function checkwin()
 {
 	letter=$1
@@ -301,17 +351,15 @@ function computerturn()
 	fi
 	if(($compPlay==0))
 	then
-	response=$((RANDOM%9))
-
-		if [[ "${gameboard[$response]}"!=X && "${gameboard[$response]}"!=O ]]
-		then
-			echo "Computer turn"
-			gameboard[$response]="$computerletter"
-		else
-			computerturn $computerletter
-		fi
+		takecentre $computerletter
 	fi
+	if (($compPlay==0))
+	then
+		takesides $computerletter
+	fi
+	displayboard
 }
+
 function alternateplay()
 {
 	chance="$(firstchance)"
