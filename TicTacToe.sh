@@ -18,6 +18,7 @@ echo "${gameboard[3]}  | ${gameboard[4]} | ${gameboard[5]}"
 echo "-----------"
 echo "${gameboard[6]}  | ${gameboard[7]} | ${gameboard[8]}"
 }
+
 function playturn(){
 playerletter=$1
 printf"Enter any number bet 0-8:"
@@ -81,6 +82,16 @@ function fillcorners()
 				fillcorners $letter
 			fi
 	esac
+}
+function takecenter()
+{
+	computerletter=$1
+	compPlay=0
+	if [[ ${gameboard[4]}==$IS_EMPTY ]]
+	then
+		gameboard[4]=$computerletter
+		compPlay=1
+	fi
 }
 function checkwin()
 {
